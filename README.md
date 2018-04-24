@@ -1,5 +1,4 @@
 # hkscs_unicode_converter
-=========
 
 Convert Unicode characters to HKSCS-2016
 
@@ -11,7 +10,7 @@ Convert Unicode characters to HKSCS-2016
 
     const hkscsConverter = require('@chaklim/hkscs_unicode_converter');
 
-    const formattedNum = hkscsConverter.convertCharacter('');
+    const str = hkscsConverter.convertCharacter('');
   
   
   Output should be `港`
