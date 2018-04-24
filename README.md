@@ -5,16 +5,17 @@ Convert Unicode characters to HKSCS-2016
 
 ## Installation
 
-  `npm install @chaklim/hkscs_unicode_converter`
+  `npm install hkscs_unicode_converter`
 
 ## Usage
 
-    const hkscsConverter = require('@chaklim/hkscs_unicode_converter');
+    const hkscsConverter = require('hkscs_unicode_converter');
 
     const str = hkscsConverter.convertCharacter('');
+    const str2 = hkscsConverter.convertString('香');
   
   
-  Output should be `港`
+  Output should be `港` and `香港`
 
 
 ## Tests
