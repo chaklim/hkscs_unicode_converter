@@ -1,4 +1,5 @@
 # hkscs_unicode_converter
+[![Build Status](https://travis-ci.org/chaklim/hkscs_unicode_converter.svg?branch=master)](https://travis-ci.org/chaklim/hkscs_unicode_converter)
 
 Convert Unicode characters to HKSCS-2016
 
