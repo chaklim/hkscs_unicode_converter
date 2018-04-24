@@ -1,0 +1,30 @@
+{
+  "name": "hkscs_unicode_converter",
+  "version": "0.1.0",
+  "description": "Convert Unicode characters to HKSCS-2016",
+  "main": "index.js",
+  "dependencies": {
+    "is-hex": "^1.1.3",
+    "npm": "^6.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "engines": {
+    "node": ">=5.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaklim/hkscs_unicode_converter.git"
+  },
+  "author": "ChakLim Wong <chaklim@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chaklim/hkscs_unicode_converter/issues"
+  },
+  "homepage": "https://github.com/chaklim/hkscs_unicode_converter#readme"
+}
