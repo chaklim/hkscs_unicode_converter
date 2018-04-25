@@ -115,11 +115,6 @@ describe('convertString', function() {
     expect(result).to.equal('港');
   });
   
-  it('should not convert string with length > 1 (i.e. return original input)', function() {
-    const result = convertString('ABC');
-    expect(result).to.equal('ABC');
-  });
-
   it('should convert U+F325 to \'Ê̄\' (<00CA,0304>)', function() {
     const result = convertString(String.fromCodePoint(0xf325));
     expect(result).to.equal('Ê̄');
