@@ -1,6 +1,6 @@
 {
   "name": "hkscs_unicode_converter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Convert Unicode characters to HKSCS-2016",
   "main": "index.js",
   "dependencies": {
