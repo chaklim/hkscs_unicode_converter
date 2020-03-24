@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const isHex = require('is-hex');
+const isHexadecimal = require('is-hexadecimal');
 
 let unicodeMapping = {};
 
@@ -87,9 +87,9 @@ const files = [
 
 const tsvFile2json = (filePath) => {
   const content = fs.readFileSync(filePath, 'utf8');
-  
+
   const rows = content.split('\n');
-  
+
   const header = rows[0].split('\t');
   const contentRows = rows.slice(1);
 
@@ -109,7 +109,7 @@ const tsvFile2json = (filePath) => {
 
 const jsonFile2json = (filePath) => {
   const content = fs.readFileSync(filePath, 'utf8');
-  
+
   const json = JSON.parse(content);
   return json;
 }
@@ -120,7 +120,7 @@ const getFilePath = (fromFile) => {
 
 files.forEach(file => {
   const filePath = getFilePath(`${file.name}.${file.type}`);
-  
+
   if (filePath.endsWith('.tsv')) {
     unicodeMapping[file.name] = {
       array: tsvFile2json(filePath)
@@ -145,7 +145,7 @@ const formattedKeyValuePairFrom = (key, value) => {
   const isRemoveFirstTwoCharacters = key.startsWith('U+');
   const newKey = isRemoveFirstTwoCharacters ? key.substr(2) : key;
   const newValue = isRemoveFirstTwoCharacters ? value.substr(2) : value;
-  
+
   // handle  Ê̄, Ê̌, ê̄, ê̌ (<00CA,0304>, <00CA,030C>, <00EA,0304>, <00EA,030C>)
   if (newValue.startsWith('<') && newValue.endsWith('>')) {
     const parsedValue = String.fromCodePoint.apply(
@@ -170,7 +170,7 @@ const mappingFrom = ({
   columnKeyTo,
 }) => {
   const mapping = {};
-  
+
   unicodeMappingArray.forEach(data => {
     columnFromKeys.forEach(columnKeyFrom => {
       const { key, value } = formattedKeyValuePairFrom(data[columnKeyFrom], data[columnKeyTo]);
@@ -187,7 +187,7 @@ const mappingFrom = ({
 files.forEach(file => {
   const unicodeMappingArray = unicodeMapping[file.name].array;
   const { columnFromKeys, columnKeyTo } = file.config;
-  
+
   unicodeMapping[file.name].map = mappingFrom({
     unicodeMappingArray,
     columnFromKeys,
@@ -216,7 +216,7 @@ const convertCharacter = (char) => {
   }
 
   let charKey = char.codePointAt(0).toString(16).toUpperCase();
-  
+
   let newChar = mappings.reduce((value, mapping) => {
     return mapping[value] || value;
   }, charKey);
@@ -224,7 +224,7 @@ const convertCharacter = (char) => {
   if (typeof newChar === 'string' && Array.from(newChar).length === 1) {
     return newChar;
   }
-  if (isHex(newChar)) {
+  if (isHexadecimal(newChar)) {
     return String.fromCodePoint(parseInt(newChar, 16));
   }
   return newChar;

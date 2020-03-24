@@ -13,14 +13,14 @@ Convert Unicode characters to HKSCS-2016
 
     const str = hkscsConverter.convertCharacter('');
     const str2 = hkscsConverter.convertString('香');
-  
-  
+
+
   Output should be `港` and `香港`
 
 
 ## Tests
 
-  `npm test`
+  `npm test` or `yarn test`
 
 ## Contributing
 
