@@ -103,6 +103,24 @@ describe('convertCharacter', function() {
     const result = convertCharacter(String.fromCodePoint(0xFA0D));
     expect(result).to.equal('嗀');
   });
+
+  // Numerals
+
+  it('should not convert U+5341', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5341));
+    expect(result).to.equal('十');
+  });
+
+  it('should not convert U+5344', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5344));
+    expect(result).to.equal('卄');
+  });
+
+  it('should not convert U+5345', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5345));
+    expect(result).to.equal('卅');
+  });
+
 });
 
 describe('convertString', function() {
