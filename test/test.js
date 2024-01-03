@@ -80,6 +80,29 @@ describe('convertCharacter', function() {
     const result = convertCharacter(String.fromCodePoint(0xE6C6));
     expect(result).to.equal('浧');
   });
+
+  // Big5 has two duplicate characters.
+  // They both have direct mappings into Unicode, but we can standardize.
+
+  it('should convert U+5140 to 兀', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5140));
+    expect(result).to.equal('兀');
+  });
+
+  it('should convert U+FA0C to 兀', function() {
+    const result = convertCharacter(String.fromCodePoint(0xFA0C));
+    expect(result).to.equal('兀');
+  });
+
+  it('should convert U+55C0 to 嗀', function() {
+    const result = convertCharacter(String.fromCodePoint(0x55C0));
+    expect(result).to.equal('嗀');
+  });
+
+  it('should convert U+FA0D to 嗀', function() {
+    const result = convertCharacter(String.fromCodePoint(0xFA0D));
+    expect(result).to.equal('嗀');
+  });
 });
 
 describe('convertString', function() {
