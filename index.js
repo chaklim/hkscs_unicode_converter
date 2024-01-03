@@ -1,13 +1,15 @@
 'use strict';
 
+const fs = require('fs');
 const isHexadecimal = require('is-hexadecimal');
-const unicodeMapping = require('./unicodeMapping.json');
+
+let unicodeMapping = {};
 
 const files = [
   {
     name: 'gccs',
     type: 'tsv',
-    header: ['Big5', 'Unicode', 'Big5Alternate', 'UnicodeName'],
+    header: [ 'Big5', 'Unicode', 'Big5Alternate', 'UnicodeName' ],
     config: {
       columnFromKeys: ['Big5Alternate'],
       columnKeyTo: 'Unicode',
@@ -16,7 +18,7 @@ const files = [
   {
     name: 'hkscs1999',
     type: 'tsv',
-    header: ['Big5', 'Unicode', 'UnicodeAlternate', 'UnicodeName'],
+    header: [ 'Big5', 'Unicode', 'UnicodeAlternate', 'UnicodeName' ],
     config: {
       columnFromKeys: ['UnicodeAlternate'],
       columnKeyTo: 'Unicode',
@@ -25,7 +27,7 @@ const files = [
   {
     name: 'hkscs2001',
     type: 'tsv',
-    header: ['Big5', 'Unicode', 'UnicodeAlternate', 'UnicodeName'],
+    header: [ 'Big5', 'Unicode', 'UnicodeAlternate', 'UnicodeName' ],
     config: {
       columnFromKeys: ['UnicodeAlternate'],
       columnKeyTo: 'Unicode',
@@ -34,16 +36,26 @@ const files = [
   {
     name: 'hkscs2001_2',
     type: 'tsv',
-    header: ['BIG-5', 'ISO/IEC_10646-1:1993', 'ISO/IEC_10646-1:2000', 'ISO/IEC_10646-2:2001'],
+    header: [
+      'BIG-5',
+      'ISO/IEC_10646-1:1993',
+      'ISO/IEC_10646-1:2000',
+      'ISO/IEC_10646-2:2001',
+    ],
     config: {
       columnFromKeys: ['ISO/IEC_10646-1:1993', 'ISO/IEC_10646-1:2000'],
       columnKeyTo: 'ISO/IEC_10646-2:2001',
-    },
+    }
   },
   {
     name: 'hkscs2004',
     type: 'tsv',
-    header: ['BIG-5', 'ISO/IEC_10646-1:1993', 'ISO/IEC_10646-1:2000', 'ISO/IEC_10646:2003_Amendment'],
+    header:  [
+      'BIG-5',
+      'ISO/IEC_10646-1:1993',
+      'ISO/IEC_10646-1:2000',
+      'ISO/IEC_10646:2003_Amendment',
+    ],
     config: {
       columnFromKeys: ['ISO/IEC_10646-1:1993', 'ISO/IEC_10646-1:2000'],
       columnKeyTo: 'ISO/IEC_10646:2003_Amendment',
@@ -52,7 +64,12 @@ const files = [
   {
     name: 'hkscs2008',
     type: 'tsv',
-    header: ['BIG-5', 'ISO/IEC_10646-1:1993', 'ISO/IEC_10646-1:2000', 'ISO/IEC_10646:2003_Amendment'],
+    header:  [
+      'BIG-5',
+      'ISO/IEC_10646-1:1993',
+      'ISO/IEC_10646-1:2000',
+      'ISO/IEC_10646:2003_Amendment',
+    ],
     config: {
       columnFromKeys: ['ISO/IEC_10646-1:1993', 'ISO/IEC_10646-1:2000'],
       columnKeyTo: 'ISO/IEC_10646:2003_Amendment',
@@ -68,12 +85,58 @@ const files = [
   },
 ];
 
+const tsvFile2json = (filePath) => {
+  const content = fs.readFileSync(filePath, 'utf8');
+
+  const rows = content.split('\n');
+
+  const header = rows[0].split('\t');
+  const contentRows = rows.slice(1);
+
+  let json = [];
+  contentRows.forEach(row => {
+    const columns = row.split('\t');
+    let data = {};
+    columns.forEach((column, index) => {
+      data[header[index]] = column;
+    });
+
+    json.push(data);
+  });
+
+  return json;
+}
+
+const jsonFile2json = (filePath) => {
+  const content = fs.readFileSync(filePath, 'utf8');
+
+  const json = JSON.parse(content);
+  return json;
+}
+
+const getFilePath = (fromFile) => {
+  return `${__dirname}/hkscs/${fromFile}`;
+};
+
+files.forEach(file => {
+  const filePath = getFilePath(`${file.name}.${file.type}`);
+
+  if (filePath.endsWith('.tsv')) {
+    unicodeMapping[file.name] = {
+      array: tsvFile2json(filePath)
+    };
+  }
+  if (filePath.endsWith('.json')) {
+    unicodeMapping[file.name] = {
+      array: jsonFile2json(filePath)
+    };
+  }
+});
+
 const formattedKeyValuePairFrom = (key, value) => {
   if (
-    typeof key !== 'string' ||
-    key.length <= 0 ||
-    typeof value !== 'string' ||
-    value.length <= 0 ||
+    typeof key !== 'string' || key.length <= 0 ||
+    typeof value !== 'string' || value.length <= 0 ||
     key === value
   ) {
     return {};
@@ -87,24 +150,25 @@ const formattedKeyValuePairFrom = (key, value) => {
   if (newValue.startsWith('<') && newValue.endsWith('>')) {
     const parsedValue = String.fromCodePoint.apply(
       null,
-      value
-        .slice(1, -1)
-        .split(',')
-        .map(stringValue => parseInt(stringValue, 16)),
+      value.slice(1, -1).split(',').map(stringValue => parseInt(stringValue, 16))
     );
     return {
       key: newKey,
-      value: parsedValue,
+      value: parsedValue
     };
   }
 
   return {
     key: newKey,
     value: newValue,
-  };
-};
+  }
+}
 
-const mappingFrom = ({ unicodeMappingArray, columnFromKeys, columnKeyTo }) => {
+const mappingFrom = ({
+  unicodeMappingArray,
+  columnFromKeys,
+  columnKeyTo,
+}) => {
   const mapping = {};
 
   unicodeMappingArray.forEach(data => {
@@ -142,7 +206,7 @@ files.forEach(file => {
 const mappings = Object.keys(unicodeMapping).map(key => unicodeMapping[key].map);
 
 // char is a string character
-const convertCharacter = char => {
+const convertCharacter = (char) => {
   if (typeof char !== 'string') {
     return char;
   }
@@ -166,16 +230,14 @@ const convertCharacter = char => {
   return newChar;
 };
 
-const convertString = str => {
+const convertString = (str) => {
   if (typeof str !== 'string') {
     return str;
   }
-  return Array.from(str)
-    .map(char => convertCharacter(char))
-    .join('');
+  return Array.from(str).map(char => convertCharacter(char)).join('')
 };
 
 module.exports = Object.freeze({
   convertCharacter,
-  convertString,
+  convertString
 });

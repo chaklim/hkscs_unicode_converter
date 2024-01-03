@@ -70,6 +70,57 @@ describe('convertCharacter', function() {
     const result = convertCharacter('我們');
     expect(result).to.equal('我們');
   });
+
+  it('should convert U+E6C5 to 𤧬', function() {
+    const result = convertCharacter(String.fromCodePoint(0xE6C5));
+    expect(result).to.equal('𤧬');
+  });
+
+  it('should convert U+E6C6 to 浧', function() {
+    const result = convertCharacter(String.fromCodePoint(0xE6C6));
+    expect(result).to.equal('浧');
+  });
+
+  // Big5 has two duplicate characters.
+  // They both have direct mappings into Unicode, but we can standardize.
+
+  it('should convert U+5140 to 兀', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5140));
+    expect(result).to.equal('兀');
+  });
+
+  it('should convert U+FA0C to 兀', function() {
+    const result = convertCharacter(String.fromCodePoint(0xFA0C));
+    expect(result).to.equal('兀');
+  });
+
+  it('should convert U+55C0 to 嗀', function() {
+    const result = convertCharacter(String.fromCodePoint(0x55C0));
+    expect(result).to.equal('嗀');
+  });
+
+  it('should convert U+FA0D to 嗀', function() {
+    const result = convertCharacter(String.fromCodePoint(0xFA0D));
+    expect(result).to.equal('嗀');
+  });
+
+  // Numerals
+
+  it('should not convert U+5341', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5341));
+    expect(result).to.equal('十');
+  });
+
+  it('should not convert U+5344', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5344));
+    expect(result).to.equal('卄');
+  });
+
+  it('should not convert U+5345', function() {
+    const result = convertCharacter(String.fromCodePoint(0x5345));
+    expect(result).to.equal('卅');
+  });
+
 });
 
 describe('convertString', function() {
