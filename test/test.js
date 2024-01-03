@@ -70,6 +70,16 @@ describe('convertCharacter', function() {
     const result = convertCharacter('我們');
     expect(result).to.equal('我們');
   });
+
+  it('should convert U+E6C5 to 𤧬', function() {
+    const result = convertCharacter(String.fromCodePoint(0xE6C5));
+    expect(result).to.equal('𤧬');
+  });
+
+  it('should convert U+E6C6 to 浧', function() {
+    const result = convertCharacter(String.fromCodePoint(0xE6C6));
+    expect(result).to.equal('浧');
+  });
 });
 
 describe('convertString', function() {
